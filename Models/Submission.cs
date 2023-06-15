@@ -1,4 +1,6 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+
 namespace GraduationProject.Models;
 
 public partial class Submission
@@ -7,7 +9,7 @@ public partial class Submission
 
     public int UserId { get; set; }
 
-    public string Code { get; set; } = null!;
+    public string Code { get; set; }
 
     public byte Status { get; set; }
 
@@ -19,9 +21,9 @@ public partial class Submission
 
     public DateTime SubmissionTime { get; set; }
 
-    public virtual Language Langage { get; set; } = null!;
+    public virtual Language Langage { get; set; }
 
-    public virtual Problem Problem { get; set; } = null!;
+    public virtual Problem Problem { get; set; }
 
-    public virtual User User { get; set; } = null!;
+    public virtual User User { get; set; }
 }

@@ -7,13 +7,13 @@ using System.Net;
 
 namespace GraduationProject.Controllers
 {
-    [Authorize(Roles = "SuperAdmin,Admin")]
+    //[Authorize(Roles = "SuperAdmin,Admin")]
     public class ManageProblemController : ControllerBase
     {
         private readonly ProjectDbContext db;
-        ManageProblemController()
+        public ManageProblemController()
         {
-            db = new ProjectDbContext();
+            db = new();
         }
         /// <summary>
         /// For add Problems in Contest
@@ -21,6 +21,7 @@ namespace GraduationProject.Controllers
         /// <param name="c_id">Contest ID</param>
         /// <param name="problems">List of Problem Data</param>
         /// <returns></returns>
+        
         [HttpPost("contest/{c_id:int}/problems")]
         public ActionResult Prolem([FromRoute] int? c_id, [FromBody] List<ProblemBinding> problems)
         {
@@ -50,6 +51,7 @@ namespace GraduationProject.Controllers
         /// <param name="c_id">Contest ID</param>
         /// <returns>if Data isn't Valid return 422 . if data Valid return 200 and Json file With Problem Data without problemfile</returns>
         [HttpGet("contest/{c_id:int}/problems")]
+
         public ActionResult Problems([FromRoute] int? c_id)
         {
             if (c_id is null)
@@ -79,7 +81,6 @@ namespace GraduationProject.Controllers
         /// <param name="p_id">Problem ID</param>
         /// <returns>if Data isn't Valid return 422 . if data Valid return 200 and file for user</returns>
         [HttpGet("problem/{p_id:int}")]
-    
         public async Task<IActionResult> Problem([FromRoute] int? p_id)
         {
             if (p_id is null)

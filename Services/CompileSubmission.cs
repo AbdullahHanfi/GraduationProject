@@ -31,7 +31,7 @@ namespace GraduationProject.Services
             {
                 var outputcase = System.IO.File.ReadAllText(Path.GetFullPath($"~/App_Data/TestCases/{OutputCase}"));
                 outputcase = Regex.Replace(outputcase, @"\s+", " ");
-                var Check = CodeOutPut.Result.Equals(outputcase + '\n');
+                var Check = CodeOutPut.Result.Equals(outputcase);
                 if (!Check)
                 {
                     submission.Status = (int)SubmissionStatus.Wrong;

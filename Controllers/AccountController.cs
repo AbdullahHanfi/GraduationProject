@@ -11,7 +11,6 @@ namespace GraduationProject.Controllers
 {
     [AllowAnonymous]
     [ApiController]
-    [EnableCors("AllowAll")]
     public class AccountController : ControllerBase
     {
 

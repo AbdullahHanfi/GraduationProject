@@ -9,10 +9,11 @@ namespace GraduationProject.Controllers
     public class ManageAccountController : ControllerBase
     {
         private readonly ProjectDbContext db;
-        ManageAccountController()
+        public ManageAccountController(ProjectDbContext db)
         {
-            db = new ProjectDbContext();
+            this.db = db;
         }
+
         /// <summary>
         /// Get all Accounts for Super Admin
         /// </summary>

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using GraduationProject.Services;
 using System.Security.Claims;
+using GraduationProject.BindingModels;
 
 namespace GraduationProject.Controllers
 {
@@ -25,7 +26,8 @@ namespace GraduationProject.Controllers
                         LangageId = (int)LangageId,
                         UserId = Convert.ToInt32(User.FindFirstValue("ID")),
                         Memory=-1,
-                        ExecutionTime=-1
+                        ExecutionTime=-1,
+                        Status= (int)SubmissionStatus.Accept
                     };
                     if (testCases != null && ProblemInfo != null)
                     {

@@ -6,6 +6,9 @@ namespace GraduationProject
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine($"Tunnel URL: " +
+                $"{Environment.GetEnvironmentVariable("VS_TUNNEL_URL")}");
+
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -32,8 +35,8 @@ namespace GraduationProject
                               .AllowAnyHeader();
                     });
             });
-            
-            
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -41,10 +44,10 @@ namespace GraduationProject
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-                app.UseCors("AllowAll");
             }
 
             app.UseHttpsRedirection();
+            app.UseCors("AllowAll");
 
             app.UseAuthentication();
             app.UseAuthorization();

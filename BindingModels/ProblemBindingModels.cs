@@ -7,6 +7,8 @@ namespace GraduationProject.Models
         [Required]
         public string ProbelmFile { get; set; }
         [Required]
+        public string Name { get; set; }
+        [Required]
         public decimal Time_Limit { get; set; }
         [Required]
         public int Memory_Limit { get; set; }

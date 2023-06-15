@@ -5,7 +5,7 @@ public partial class Contest
 {
     public int CId { get; set; }
 
-    public string Name { get; set; } = null!;
+    public string Name { get; set; }
 
     public DateTime StartAt { get; set; }
 
@@ -15,7 +15,7 @@ public partial class Contest
 
     public bool? Visibility { get; set; }
 
-    public virtual User Admin { get; set; } = null!;
+    public virtual User Admin { get; set; }
 
     public virtual ICollection<Problem> Problems { get; set; } = new List<Problem>();
 

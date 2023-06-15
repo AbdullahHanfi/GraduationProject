@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace GraduationProject.Models;
 
@@ -47,6 +49,7 @@ public partial class ProjectDbContext : DbContext
                 .HasColumnType("smalldatetime")
                 .HasColumnName("End_in");
             entity.Property(e => e.Name)
+                .IsRequired()
                 .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.StartAt)
@@ -106,6 +109,7 @@ public partial class ProjectDbContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Name)
+                .IsRequired()
                 .HasMaxLength(20)
                 .IsUnicode(false);
         });
@@ -119,6 +123,7 @@ public partial class ProjectDbContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("ID");
             entity.Property(e => e.InputId)
+                .IsRequired()
                 .HasMaxLength(250)
                 .IsUnicode(false)
                 .HasColumnName("Input_ID");
@@ -136,7 +141,12 @@ public partial class ProjectDbContext : DbContext
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CId).HasColumnName("C_ID");
             entity.Property(e => e.MemoryLimit).HasColumnName("Memory_Limit");
-            entity.Property(e => e.Name).IsUnicode(false);
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.ProblemFile)
+                .IsRequired()
+                .IsUnicode(false);
             entity.Property(e => e.TimeLimit)
                 .HasColumnType("decimal(18, 0)")
                 .HasColumnName("Time_Limit");
@@ -155,6 +165,7 @@ public partial class ProjectDbContext : DbContext
         {
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Name)
+                .IsRequired()
                 .HasMaxLength(30)
                 .IsUnicode(false);
         });
@@ -167,7 +178,9 @@ public partial class ProjectDbContext : DbContext
 
             entity.Property(e => e.ProblemId).HasColumnName("Problem_ID");
             entity.Property(e => e.UserId).HasColumnName("User_ID");
-            entity.Property(e => e.Code).IsUnicode(false);
+            entity.Property(e => e.Code)
+                .IsRequired()
+                .IsUnicode(false);
             entity.Property(e => e.ExecutionTime).HasColumnName("Execution_Time");
             entity.Property(e => e.LangageId).HasColumnName("Langage_ID");
             entity.Property(e => e.SubmissionTime)
@@ -196,17 +209,21 @@ public partial class ProjectDbContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Email)
+                .IsRequired()
                 .HasMaxLength(64)
                 .IsUnicode(false);
             entity.Property(e => e.IsValid).HasDefaultValueSql("((1))");
             entity.Property(e => e.Name)
+                .IsRequired()
                 .HasMaxLength(64)
                 .IsUnicode(false);
             entity.Property(e => e.Password)
+                .IsRequired()
                 .HasMaxLength(64)
                 .IsUnicode(false);
             entity.Property(e => e.RId).HasColumnName("R_ID");
             entity.Property(e => e.UserName)
+                .IsRequired()
                 .HasMaxLength(64)
                 .IsUnicode(false);
 

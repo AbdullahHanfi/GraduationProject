@@ -14,12 +14,14 @@ namespace GraduationProject.Services
         {
             var db = new ProjectDbContext();
             List<Problem> problemsUploaded = new List<Problem>();
+
             foreach (var problem in problems)
             {
 
                 Problem problemUploaded = new Problem()
                 {
-                    Name = problem.ProbelmFile,
+                    ProblemFile= problem.ProbelmFile,
+                    Name = problem.Name,
                     TimeLimit = problem.Time_Limit,
                     MemoryLimit = problem.Memory_Limit,
                     CId = c_id ?? -1,

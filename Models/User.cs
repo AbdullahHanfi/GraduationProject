@@ -6,15 +6,15 @@ public partial class User
 {
     public int Id { get; set; }
 
-    public string Email { get; set; } = null!;
+    public string Email { get; set; }
 
-    public string Password { get; set; } = null!;
+    public string Password { get; set; }
 
     public int RId { get; set; }
 
-    public string UserName { get; set; } = null!;
+    public string UserName { get; set; }
 
-    public string Name { get; set; } = null!;
+    public string Name { get; set; }
 
     public byte IsValid { get; set; }
 
@@ -22,7 +22,7 @@ public partial class User
 
     public virtual ICollection<Contest> Contests { get; set; } = new List<Contest>();
 
-    public virtual Role RIdNavigation { get; set; } = null!;
+    public virtual Role RIdNavigation { get; set; }
 
     public virtual ICollection<Submission> Submissions { get; set; } = new List<Submission>();
 
@@ -37,5 +37,4 @@ public partial class User
 
         return user;
     }
-
 }

@@ -10,10 +10,11 @@ namespace GraduationProject.Controllers
     public class MangeTestCasesController : ControllerBase
     {
         private readonly ProjectDbContext db;
-        MangeTestCasesController()
+        public MangeTestCasesController(ProjectDbContext db)
         {
-            db = new ProjectDbContext();
+            this.db = db;
         }
+
         /// <summary>
         /// inesrt testcases for problems
         /// </summary>
@@ -85,10 +86,10 @@ namespace GraduationProject.Controllers
         /// if not found , 
         /// 204 if found ,
         /// 500 if unknow errors</returns>
-        [HttpDelete("testcase/{testid:string}")]
-        public ActionResult DeleteTestCase([FromRoute] string testid)
+        [HttpDelete("testcase")]
+        public ActionResult DeleteTestCase(string? testid)
         {
-            int IsOperated = TestCasesServices.DeleteTestCase(testid);
+            int IsOperated = TestCasesServices.DeleteTestCase(testid??"");
             if (IsOperated == 0)
                 return StatusCode(422, "Not Found");
             else if (IsOperated == 1)
