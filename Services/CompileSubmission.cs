@@ -31,7 +31,7 @@ namespace GraduationProject.Services
             {
                 var outputcase = System.IO.File.ReadAllText(Path.GetFullPath($"~/App_Data/TestCases/{OutputCase}"));
                 outputcase = Regex.Replace(outputcase, @"\s+", " ");
-                var Check = CodeOutPut.Result.Equals(outputcase + '\n');
+                var Check = CodeOutPut.Result.Equals(outputcase);
                 if (!Check)
                 {
                     submission.Status = (int)SubmissionStatus.Wrong;
@@ -40,19 +40,19 @@ namespace GraduationProject.Services
                 return true;
             }
         }
-        static public List<TestCasesBinding>? TestCases4Problem(int id)
+        static public List<TestCasesworkmodel>? TestCases4Problem(int id)
         {
-            List<TestCasesBinding> testCases = new List<TestCasesBinding>();
+            List<TestCasesworkmodel> testCases = new List<TestCasesworkmodel>();
             using (var dbWR = new ProjectDbContext())
             {
                 var inputCases = dbWR.InputCases.Where(item => item.ProblemId == id);
 
                 foreach (var inputCase in inputCases)
                 {
-                    TestCasesBinding item = new TestCasesBinding()
+                    TestCasesworkmodel item = new TestCasesworkmodel()
                     {
-                        InputCase = inputCase.Id,
-                        OutputCase = dbWR.OutputCases.FirstOrDefault(item => item.InputId == inputCase.Id)?.Id ?? ""
+                        InputCase = inputCase.Input,
+                        OutputCase = dbWR.OutputCases.FirstOrDefault(item => item.InputId == inputCase.Id)?.Output 
                     };
                     if (item != null && !string.IsNullOrEmpty(item?.InputCase) && !string.IsNullOrEmpty(item?.OutputCase))
                     {
@@ -70,12 +70,14 @@ namespace GraduationProject.Services
         {
             var outputData = new OutputData4Submission();
             // Define the file names and paths
-            string sourceFile = "source.cpp", executableFile = "executable.exe";
+            string sourceFile = $"source_{(long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds}.cpp",
+               executableFile = $"executable_{(long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds}.exe";
+
             // Save the C++ code to a file
             File.WriteAllText(sourceFile, code);
 
 
-            // Define the process startup info
+            // Define the process startup info 
             var startInfo = new ProcessStartInfo
             {
                 FileName = "g++",

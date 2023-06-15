@@ -6,14 +6,15 @@ using System.Net;
 
 namespace GraduationProject.Controllers
 {
-    [Authorize(Roles = "SuperAdmin,Admin")]
+    //[Authorize(Roles = "SuperAdmin,Admin")]
     public class MangeTestCasesController : ControllerBase
     {
         private readonly ProjectDbContext db;
-        MangeTestCasesController()
+        public MangeTestCasesController(ProjectDbContext db)
         {
-            db = new ProjectDbContext();
+            this.db = db;
         }
+
         /// <summary>
         /// inesrt testcases for problems
         /// </summary>
@@ -21,11 +22,16 @@ namespace GraduationProject.Controllers
         /// <param name="TestCases">TestCases as base 64</param>
         /// <returns>return 422 and list of errors if data not valid , 201 if data is created , else 500</returns>
         [HttpPost("problem/{p_id:int}/testcases")]
-        public ActionResult PostTestCases([FromRoute] int? p_id, [FromBody] List<TestCasesBinding> TestCases)
+        public ActionResult PostTestCases([FromRoute] int? p_id, [FromForm] TestCasesBinding TestCase)
         {
 
-            if (p_id is null || TestCases is null)
-                ModelState.AddModelError("", "Non valid data");
+            if (p_id is null )
+                ModelState.AddModelError("Problem id", "Non valid data");
+            if(TestCase is null 
+                || TestCase.InputCase is null || TestCase.InputCase.Length == 0
+                || TestCase.OutputCase is null || TestCase.OutputCase.Length == 0)
+
+                ModelState.AddModelError("Testcases data", "Non valid data");
 
             if (!ModelState.IsValid)
             {
@@ -34,7 +40,7 @@ namespace GraduationProject.Controllers
                 return StatusCode(422, Errors);
             }
 
-            bool IsCreated = TestCasesServices.IsCreated(ref TestCases, p_id);
+            bool IsCreated = TestCasesServices.IsCreated(ref TestCase, p_id);
             if (IsCreated)
             {
                 return StatusCode((int)HttpStatusCode.Created);
@@ -45,7 +51,7 @@ namespace GraduationProject.Controllers
             }
         }
         /// <summary>
-        /// return all testcases input and output as base 64 with there id 
+        /// return all testcases input and output as string with there id 
         /// </summary>
         /// <param name="p_id">problem ID</param>
         /// <returns>return 200 and all cases of found , 204 if case not found</returns>
@@ -62,15 +68,9 @@ namespace GraduationProject.Controllers
                 select new
                 {
                     InputID = Input_Cases.Id,
-                    FileInput =
-                        System.IO.File.ReadAllText(
-                            Path.GetFullPath(
-                                $"~/App_Data/TestCases/{Input_Cases.Id}")),
+                    FileInput = Input_Cases.Input,
                     OutputID = Output_Cases.Id,
-                    FileOutput =
-                        System.IO.File.ReadAllText(
-                            Path.GetFullPath(
-                                $"~/App_Data/TestCases/{Output_Cases.Id}"))
+                    FileOutput = Output_Cases.Output
                 };
 
             if (TestCases is null)
@@ -85,10 +85,10 @@ namespace GraduationProject.Controllers
         /// if not found , 
         /// 204 if found ,
         /// 500 if unknow errors</returns>
-        [HttpDelete("testcase/{testid:string}")]
-        public ActionResult DeleteTestCase([FromRoute] string testid)
+        [HttpDelete("testcase")]
+        public ActionResult DeleteTestCase(string? testid)
         {
-            int IsOperated = TestCasesServices.DeleteTestCase(testid);
+            int IsOperated = TestCasesServices.DeleteTestCase(testid??"");
             if (IsOperated == 0)
                 return StatusCode(422, "Not Found");
             else if (IsOperated == 1)

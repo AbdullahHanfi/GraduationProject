@@ -1,8 +1,8 @@
 ﻿namespace GraduationProject.BindingModels
 {
-    public enum SubmissionStatus
+    public enum SubmissionStatus:int
     {
-        Accept,Wrong,TimeLimit,MemoryLimit,Compilationerror
+        Accept=1,Wrong=2,TimeLimit=4,MemoryLimit=8,Compilationerror=16,Running=32,inQueue=64
     }
     public class OutputData4Submission
     {

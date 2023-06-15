@@ -61,7 +61,8 @@ namespace GraduationProject.Services
                 _contest.Name = contest.Name;
                 _contest.StartAt = contest.Start_at;
                 _contest.EndIn = contest.End_in;
-                _contest.AdminId = Convert.ToInt32(HttpContext.User.FindFirstValue("ID"));
+                //_contest.AdminId = Convert.ToInt32(HttpContext.User.FindFirstValue("ID"));
+                _contest.AdminId = 4;
                 _contest.Visibility = true;
 
                 db.Contests.Add(_contest);

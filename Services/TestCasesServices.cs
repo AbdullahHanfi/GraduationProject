@@ -4,59 +4,29 @@ namespace GraduationProject.Services
 {
     static public class TestCasesServices
     {
-        static private bool Valid(ref List<TestCasesBinding> TestCases)
-        {
-            foreach (var TestCase in TestCases)
-            {
-                if (string.IsNullOrEmpty(TestCase.InputCase) || string.IsNullOrEmpty(TestCase.OutputCase))
-                    return false;
-            }
-            return true;
-        }
 
-        /// <summary>
-        /// use for save Testcase
-        /// </summary>
-        /// <param name="filename"></param>
-        /// <param name="file">File as Base 64</param>
-        static public void SaveTestCase(string filename, string file)
-        {
-            var pathInput = Path.GetFullPath($"~/App_Data/TestCases/{filename}");
-            byte[] bytesInput = Convert.FromBase64String(file);
-            File.WriteAllBytes(pathInput, bytesInput);
-        }
-        static public bool IsCreated(ref List<TestCasesBinding> TestCases, int? p_id)
+        static public bool IsCreated(ref TestCasesBinding TestCase, int? p_id)
         {
             ProjectDbContext db = new ProjectDbContext();
-            List<InputCase> Inputcases = new List<InputCase>();
-            List<OutputCase> Outputcases = new List<OutputCase>();
-            var IsValid = Valid(ref TestCases);
-            if (!IsValid)
-                return false;
-            foreach (var TestCase in TestCases)
+
+            using var readerinput = new StreamReader(TestCase.InputCase.OpenReadStream());
+            using var readeroutput = new StreamReader(TestCase.OutputCase.OpenReadStream());
+
+            InputCase Inputcase = new InputCase()
             {
+                Id = Guid.NewGuid().ToString(),
+                ProblemId = p_id ?? -1,
+                Input = readerinput.ReadToEnd()
+            };
+            OutputCase Outputcase = new OutputCase()
+            {
+                Id = Guid.NewGuid().ToString(),
+                InputId = Inputcase.Id,
+                Output = readeroutput.ReadToEnd()
+            };
 
-                InputCase Inputcase = new InputCase()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    ProblemId = p_id ?? -1
-                };
-                OutputCase Outputcase = new OutputCase()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    InputId = Inputcase.Id
-                };
-
-                SaveTestCase(Inputcase.Id, TestCase.InputCase);
-
-                SaveTestCase(Outputcase.Id, TestCase.OutputCase);
-
-                Inputcases.Add(Inputcase);
-                Outputcases.Add(Outputcase);
-            }
-
-            db.InputCases.AddRange(Inputcases);
-            db.OutputCases.AddRange(Outputcases);
+            db.InputCases.Add(Inputcase);
+            db.OutputCases.Add(Outputcase);
             try
             {
                 db.SaveChanges();

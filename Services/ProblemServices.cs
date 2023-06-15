@@ -10,29 +10,25 @@ namespace GraduationProject.Services
         /// <param name="problems"></param>
         /// <param name="c_id"></param>
         /// <returns></returns>
-        static public bool IsCreated(ref List<ProblemBinding> problems, int? c_id)
+        static public bool IsCreated(ref ProblemBinding problem, int? c_id)
         {
             var db = new ProjectDbContext();
-            List<Problem> problemsUploaded = new List<Problem>();
-            foreach (var problem in problems)
+
+
+            Problem problemUploaded = new Problem()
             {
-
-                Problem problemUploaded = new Problem()
-                {
-                    Name = problem.ProbelmFile,
-                    TimeLimit = problem.Time_Limit,
-                    MemoryLimit = problem.Memory_Limit,
-                    CId = c_id ?? -1,
-                    Visibility = true
-                };
-                problemsUploaded.Add(problemUploaded);
-            }
-
-            db.Problems.AddRange(problemsUploaded);
+                Name = problem.ProbelmFile.FileName,
+                TimeLimit = problem.Time_Limit ?? 2,
+                MemoryLimit = problem.Memory_Limit ?? 250,
+                CId = c_id ?? -1,
+                Visibility = true
+            };
+            db.Problems.Add(problemUploaded);
 
             try
             {
                 db.SaveChanges();
+                FileServices.SaveFileLocal(problem.ProbelmFile, "Problems");
             }
             catch
             {
@@ -40,6 +36,8 @@ namespace GraduationProject.Services
             }
             return true;
         }
+        
+
         #region Delete_problem
         //static public void DeleteTestCase(int P_ID)
         //{

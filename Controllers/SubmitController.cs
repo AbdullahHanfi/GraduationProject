@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using GraduationProject.Services;
 using System.Security.Claims;
+using GraduationProject.BindingModels;
 
 namespace GraduationProject.Controllers
 {
@@ -10,7 +11,7 @@ namespace GraduationProject.Controllers
     public class SubmitController : ControllerBase
     {
         [HttpPost("Submit")]
-        public void Submit(string? code, int? p_id, int? LangageId)
+        public async Task Submit(string? code, int? p_id, int? LangageId)
         {
             if (code != null && p_id != null && LangageId != null)
                 using (var dbWR = new ProjectDbContext())
@@ -24,16 +25,20 @@ namespace GraduationProject.Controllers
                         SubmissionTime = DateTime.Now,
                         LangageId = (int)LangageId,
                         UserId = Convert.ToInt32(User.FindFirstValue("ID")),
-                        Memory=-1,
-                        ExecutionTime=-1
+                        Memory = -1,
+                        ExecutionTime = -1,
+                        Status = (int)SubmissionStatus.inQueue
                     };
+                    dbWR.Submissions.Add(submission);
+                    dbWR.SaveChanges();
+
                     if (testCases != null && ProblemInfo != null)
                     {
+                        submission.Status = (int)SubmissionStatus.Running;
                         foreach (var testCase in testCases)
                         {
-                            var CodeOutPut = CompileSubmission.ExecuteCppCode(
-                                code,
-                                System.IO.File.ReadAllText(Path.GetFullPath($"~/App_Data/TestCases/{testCase.InputCase}")),
+                            var CodeOutPut = CompileSubmission.ExecuteCppCode(code,
+                                testCase.InputCase,
                                 ProblemInfo.TimeLimit,
                                 ProblemInfo.MemoryLimit);
 
@@ -43,7 +48,10 @@ namespace GraduationProject.Controllers
                                 dbWR.Submissions.Add(submission);
                             }
                         }
-                        dbWR.Submissions.Add(submission);
+                        if (submission.Status == (int)SubmissionStatus.Running)
+                            submission.Status = (int)SubmissionStatus.Accept;
+                        dbWR.Submissions.Update(submission);
+                        dbWR.SaveChanges();
                     }
 
                 }

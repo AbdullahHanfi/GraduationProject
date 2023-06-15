@@ -5,8 +5,6 @@ public partial class Problem
 {
     public int Id { get; set; }
 
-    public string Name { get; set; } = null!;
-
     public decimal TimeLimit { get; set; }
 
     public int MemoryLimit { get; set; }
@@ -15,7 +13,9 @@ public partial class Problem
 
     public bool? Visibility { get; set; }
 
-    public virtual Contest CIdNavigation { get; set; } = null!;
+    public string Name { get; set; }
+
+    public virtual Contest CIdNavigation { get; set; }
 
     public virtual ICollection<InputCase> InputCases { get; set; } = new List<InputCase>();
 

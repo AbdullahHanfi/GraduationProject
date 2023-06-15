@@ -7,13 +7,13 @@ using System.Net;
 
 namespace GraduationProject.Controllers
 {
-    [Authorize(Roles = "SuperAdmin,Admin")]
+    //[Authorize(Roles = "SuperAdmin,Admin")]
     public class ManageProblemController : ControllerBase
     {
         private readonly ProjectDbContext db;
-        ManageProblemController()
+        public ManageProblemController()
         {
-            db = new ProjectDbContext();
+            db = new();
         }
         /// <summary>
         /// For add Problems in Contest
@@ -21,11 +21,14 @@ namespace GraduationProject.Controllers
         /// <param name="c_id">Contest ID</param>
         /// <param name="problems">List of Problem Data</param>
         /// <returns></returns>
-        [HttpPost("contest/{c_id:int}/problems")]
-        public ActionResult Prolem([FromRoute] int? c_id, [FromBody] List<ProblemBinding> problems)
+
+        [HttpPost("contest/{c_id:int}/problem")]
+        public IActionResult Prolem([FromRoute] int? c_id, [FromForm] ProblemBinding problem)
         {
-            if (c_id is null || problems is null)
-                ModelState.AddModelError("", "not valid data");
+            if (c_id is null)
+                ModelState.AddModelError("contest id", "not valid data");
+            if (problem is null || problem.ProbelmFile is null || problem.ProbelmFile.Length == 0)
+                ModelState.AddModelError("Problem Data", "not valid data");
 
             if (!ModelState.IsValid)
             {
@@ -34,7 +37,7 @@ namespace GraduationProject.Controllers
                 return StatusCode(422, Errors);
             }
 
-            bool IsCreated = ProblemServices.IsCreated(ref problems, c_id);
+            bool IsCreated = ProblemServices.IsCreated(ref problem, c_id);
             if (IsCreated)
             {
                 return StatusCode((int)HttpStatusCode.Created);
@@ -50,6 +53,7 @@ namespace GraduationProject.Controllers
         /// <param name="c_id">Contest ID</param>
         /// <returns>if Data isn't Valid return 422 . if data Valid return 200 and Json file With Problem Data without problemfile</returns>
         [HttpGet("contest/{c_id:int}/problems")]
+
         public ActionResult Problems([FromRoute] int? c_id)
         {
             if (c_id is null)
@@ -79,7 +83,6 @@ namespace GraduationProject.Controllers
         /// <param name="p_id">Problem ID</param>
         /// <returns>if Data isn't Valid return 422 . if data Valid return 200 and file for user</returns>
         [HttpGet("problem/{p_id:int}")]
-    
         public async Task<IActionResult> Problem([FromRoute] int? p_id)
         {
             if (p_id is null)
@@ -93,21 +96,28 @@ namespace GraduationProject.Controllers
                 return StatusCode(422, Errors);
             }
 
-            var ProblemFile = (await db.Problems
-                .FirstOrDefaultAsync(Problem =>
-                 Problem.Id == p_id )
+            var ProblemName = (await db.Problems
+                .FirstOrDefaultAsync(Problem => Problem.Id == p_id)
                 )?.Name;
-            
-            if (ProblemFile is null)
+
+            if (ProblemName is null)
             {
                 return StatusCode((int)HttpStatusCode.NoContent, "Not vlaid");
             }
             else
             {
-                return File(
-                    Convert.FromBase64String(ProblemFile),
-                     "application/octet-stream"
-                    );
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Problems", ProblemName);
+                if (!System.IO.File.Exists(filePath))
+                    return NotFound();
+
+                var memory = new MemoryStream();
+                using (var stream = new FileStream(filePath, FileMode.Open))
+                {
+                    await stream.CopyToAsync(memory);
+                }
+                memory.Position = 0;
+
+                return File(memory,$"*/*", ProblemName);
             }
         }
         /// <summary>
@@ -136,7 +146,7 @@ namespace GraduationProject.Controllers
                     }
                 }
             }
-            return StatusCode((int)HttpStatusCode.NoContent,"Not Found");
+            return StatusCode((int)HttpStatusCode.NoContent, "Not Found");
         }
     }
 }

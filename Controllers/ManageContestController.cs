@@ -9,15 +9,15 @@ using System.Net;
 
 namespace GraduationProject.Controllers
 {
+    //[Authorize(Roles = "SuperAdmin,Admin")]
     [ApiController]
-    [Authorize(Roles = "SuperAdmin,Admin")]
-    [EnableCors("AllowAll")]
     public class ManageContestController : ControllerBase
     {
         private readonly ProjectDbContext db;
+
         public ManageContestController()
         {
-            db = new ProjectDbContext();
+            db = new();
         }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace GraduationProject.Controllers
         /// </summary>
         /// <returns>if data isn't Valid Return 409 . If Data is Valid 201 . If unknow will return 500</returns>
         [HttpPost("contest")]
-        public async Task<ActionResult> Contest([FromBody] ContestBinding contest)
+        public async Task<ActionResult>  CreateContest([FromBody] ContestBinding contest)
         {
             int IsCreated = await ContestServices.IsCreated(contest, ModelState, HttpContext);
             if (IsCreated == 0)
@@ -49,7 +49,7 @@ namespace GraduationProject.Controllers
         /// Use For Return Data Of All Contest
         /// </summary>
         /// <returns>It Will be 200 in all time</returns>
-        [HttpGet("Contests")]
+        [HttpGet("contests")]
         [AllowAnonymous]
         public ActionResult Contests()
         {
