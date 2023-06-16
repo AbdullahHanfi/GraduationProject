@@ -1,4 +1,6 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+
 namespace GraduationProject.Models;
 
 public partial class Problem
