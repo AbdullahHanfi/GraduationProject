@@ -27,7 +27,7 @@ namespace GraduationProject.Controllers
         {
             if (c_id is null)
                 ModelState.AddModelError("contest id", "not valid data");
-            if (problem is null || problem.ProbelmFile is null || problem.ProbelmFile.Length == 0)
+            if (problem is null || problem.ProbelmFile is null || problem.ProbelmFile.Length == 0 || string.IsNullOrEmpty(problem.Name))
                 ModelState.AddModelError("Problem Data", "not valid data");
 
             if (!ModelState.IsValid)
@@ -72,7 +72,8 @@ namespace GraduationProject.Controllers
                     Time_Limit = Problem.TimeLimit,
                     Memory_Limit = Problem.MemoryLimit,
                     C_ID = Problem.CId,
-                    visibility = Problem.Visibility
+                    visibility = Problem.Visibility,
+                    Name = Problem.Name
                 }).ToList();
 
             return StatusCode((int)HttpStatusCode.OK, problems);
@@ -98,7 +99,7 @@ namespace GraduationProject.Controllers
 
             var ProblemName = (await db.Problems
                 .FirstOrDefaultAsync(Problem => Problem.Id == p_id)
-                )?.Name;
+                )?.FileName;
 
             if (ProblemName is null)
             {
@@ -117,7 +118,7 @@ namespace GraduationProject.Controllers
                 }
                 memory.Position = 0;
 
-                return File(memory,$"*/*", ProblemName);
+                return File(memory, $"*/*", ProblemName);
             }
         }
         /// <summary>

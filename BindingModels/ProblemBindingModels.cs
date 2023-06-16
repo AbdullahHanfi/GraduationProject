@@ -6,6 +6,8 @@ namespace GraduationProject.Models
     {
         [Required]
         public IFormFile? ProbelmFile { get; set; }
+        [Required] 
+        public string? Name { get; set; }
         [Required]
         public decimal? Time_Limit { get; set; }
         [Required]

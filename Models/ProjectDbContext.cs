@@ -147,6 +147,7 @@ public partial class ProjectDbContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CId).HasColumnName("C_ID");
+            entity.Property(e => e.FileName).HasMaxLength(100);
             entity.Property(e => e.MemoryLimit).HasColumnName("Memory_Limit");
             entity.Property(e => e.Name)
                 .HasMaxLength(100)

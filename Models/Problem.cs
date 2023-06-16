@@ -1,4 +1,6 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+
 namespace GraduationProject.Models;
 
 public partial class Problem
@@ -14,6 +16,8 @@ public partial class Problem
     public bool? Visibility { get; set; }
 
     public string Name { get; set; }
+
+    public string FileName { get; set; }
 
     public virtual Contest CIdNavigation { get; set; }
 

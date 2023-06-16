@@ -17,7 +17,8 @@ namespace GraduationProject.Services
 
             Problem problemUploaded = new Problem()
             {
-                Name = problem.ProbelmFile.FileName,
+                FileName = problem.ProbelmFile.FileName,
+                Name = problem.Name,
                 TimeLimit = problem.Time_Limit ?? 2,
                 MemoryLimit = problem.Memory_Limit ?? 250,
                 CId = c_id ?? -1,

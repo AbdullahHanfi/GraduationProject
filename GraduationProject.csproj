@@ -8,9 +8,13 @@
 
   <ItemGroup>
     <Compile Remove="App_Data\**" />
+    <Compile Remove="Problems\**" />
     <Content Remove="App_Data\**" />
+    <Content Remove="Problems\**" />
     <EmbeddedResource Remove="App_Data\**" />
+    <EmbeddedResource Remove="Problems\**" />
     <None Remove="App_Data\**" />
+    <None Remove="Problems\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,10 +25,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Problems\" />
   </ItemGroup>
 
 </Project>
