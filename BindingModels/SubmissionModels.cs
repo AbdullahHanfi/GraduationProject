@@ -1,4 +1,6 @@
-﻿namespace GraduationProject.BindingModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace GraduationProject.BindingModels
 {
     public enum SubmissionStatus:int
     {
@@ -9,5 +11,13 @@
         public string Result { get; set; }
         public long memory { get; set; }
         public decimal time { get; set; }
+    }
+    public class SubmitInfo
+    {
+        [Required]
+        public string? code { get; set; }
+        [Required]
+        public int? p_id { get; set; }
+        //public int? LangageId { get; set; }
     }
 }

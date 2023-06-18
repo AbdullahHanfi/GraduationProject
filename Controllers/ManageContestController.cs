@@ -50,7 +50,7 @@ namespace GraduationProject.Controllers
         /// </summary>
         /// <returns>It Will be 200 in all time</returns>
         [HttpGet("contests")]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public ActionResult Contests()
         {
             var contests = db.Contests

@@ -4,27 +4,28 @@ using Microsoft.AspNetCore.Mvc;
 using GraduationProject.Services;
 using System.Security.Claims;
 using GraduationProject.BindingModels;
+using System.ComponentModel.DataAnnotations;
 
 namespace GraduationProject.Controllers
 {
-    [Authorize(Roles = "Student")]
+    //[Authorize(Roles = "Student")]
     public class SubmitController : ControllerBase
     {
         [HttpPost("Submit")]
-        public async Task Submit(string? code, int? p_id, int? LangageId)
+        public async Task Submit([FromBody] SubmitInfo info)
         {
-            if (code != null && p_id != null && LangageId != null)
+            if (!string.IsNullOrWhiteSpace(info.code) && info.p_id != null)
                 using (var dbWR = new ProjectDbContext())
                 {
-                    var ProblemInfo = dbWR.Problems.Find(p_id);
-                    var testCases = CompileSubmission.TestCases4Problem((int)p_id);
+                    var ProblemInfo = dbWR.Problems.Find(info.p_id);
+                    var testCases = CompileSubmission.TestCases4Problem((int)info.p_id);
                     var submission = new Submission()
                     {
-                        Code = code,
-                        ProblemId = (int)p_id,
+                        Code = info.code,
+                        ProblemId = (int)info.p_id,
                         SubmissionTime = DateTime.Now,
-                        LangageId = (int)LangageId,
-                        UserId = Convert.ToInt32(User.FindFirstValue("ID")),
+                        LangageId = 1,
+                        UserId = 0, /*Convert.ToInt32(User.FindFirstValue("ID"))*/
                         Memory = -1,
                         ExecutionTime = -1,
                         Status = (int)SubmissionStatus.inQueue
@@ -37,7 +38,7 @@ namespace GraduationProject.Controllers
                         submission.Status = (int)SubmissionStatus.Running;
                         foreach (var testCase in testCases)
                         {
-                            var CodeOutPut = CompileSubmission.ExecuteCppCode(code,
+                            var CodeOutPut = CompileSubmission.ExecuteCppCode(info.code,
                                 testCase.InputCase,
                                 ProblemInfo.TimeLimit,
                                 ProblemInfo.MemoryLimit);
